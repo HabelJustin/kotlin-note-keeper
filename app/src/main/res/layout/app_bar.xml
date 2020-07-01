@@ -5,7 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-
     tools:context=".NoteListActivity">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -26,9 +25,6 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <include
-        android:id="@+id/include"
-        layout="@layout/activity_note_list" />
-
+    <include layout="@layout/activity_note_list" />
 
 </androidx.appcompat.widget.LinearLayoutCompat>

@@ -12,14 +12,22 @@
             android:id="@+id/galleryItems"
             android:icon="@drawable/ic_menu_gallery"
             android:title="@string/menu_gallery" />
+
+        <item
+            android:id="@+id/recent_views"
+            android:icon="@drawable/ic_visibility_black_24dp"
+            android:title="Recently Viewed" />
     </group>
 
 
-    <item
-        android:id="@+id/share"
-        android:icon="@drawable/ic_share_black_24dp"
-        android:title="Share" />
-
+    <item android:title="Media">
+        <menu>
+            <item
+                android:id="@+id/share"
+                android:icon="@drawable/ic_share_black_24dp"
+                android:title="Share" />
+        </menu>
+    </item>
 
 
 </menu>
