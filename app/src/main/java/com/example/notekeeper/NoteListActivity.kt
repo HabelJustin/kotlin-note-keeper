@@ -33,7 +33,8 @@ import kotlin.concurrent.schedule
 
 const val REQUEST_STORAGE = 0
 
-class NoteListActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener,  NoteRecyclerAdapter.OnNoteSelectedListener {
+class NoteListActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener,
+    NoteRecyclerAdapter.OnNoteSelectedListener {
 
     private val handler: Handler = object : Handler(Looper.getMainLooper()) {
         override fun handleMessage(msg: Message) {
@@ -60,8 +61,11 @@ class NoteListActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         NoteRecyclerAdapter(this, viewModel.recentlyViewedNotes)
     }
 
+    private val viewModelFactory by lazy {
+        MainViewModelFactory("Habel")
+    }
     private val viewModel by lazy {
-        ViewModelProviders.of(this)[NoteListActivityViewModel::class.java]
+        ViewModelProvider(this, viewModelFactory).get(NoteListActivityViewModel::class.java)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -102,6 +106,12 @@ class NoteListActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         // Initiate View Model Data
         handleDrawerItemSelection(viewModel.navDrawerItemSelected)
 
+        // start timer
+        viewModel.startTimer()
+        viewModel.seconds.observe(this, androidx.lifecycle.Observer {
+            Toast.makeText(this, "Timer is: ${viewModel.seconds.value}", Toast.LENGTH_SHORT).show()
+        })
+
         /*
         val listAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, DataManger.notes)
 
@@ -124,6 +134,9 @@ class NoteListActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
             }
             R.id.galleryItems -> {
                 displayCourses()
+            }
+            R.id.recent_views -> {
+                displayRecentlyViewedNote()
             }
         }
     }
@@ -181,6 +194,7 @@ class NoteListActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         // Handle navigation view item clicks here.
         when (item.itemId) {
             R.id.listItems,
+            R.id.recent_views,
             R.id.galleryItems -> {
                 handleDrawerItemSelection(item.itemId)
                 viewModel.navDrawerItemSelected = item.itemId
@@ -195,9 +209,6 @@ class NoteListActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
 
                 val shareIntent = Intent.createChooser(sentObject, null)
                 startActivity(shareIntent)
-            }
-            R.id.recent_views -> {
-                displayRecentlyViewedNote()
             }
         }
         drawer_layout.closeDrawer(GravityCompat.START)

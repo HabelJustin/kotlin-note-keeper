@@ -1,13 +1,49 @@
 package com.example.notekeeper
 
+import android.os.CountDownTimer
+import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
-class NoteListActivityViewModel : ViewModel() {
+class NoteListActivityViewModel(myName: String) : ViewModel() {
 
     var navDrawerItemSelected = R.id.listItems
 
     private val maxRecentlyViewedNotes = 5
     val recentlyViewedNotes = ArrayList<NoteInfo>(maxRecentlyViewedNotes)
+
+    private var name: String = myName
+
+    private lateinit var timer: CountDownTimer
+    private val _seconds = MutableLiveData<Int>()
+    private val _finished = MutableLiveData<Boolean>()
+
+    val seconds: LiveData<Int>
+            get() = _seconds
+    val finished: LiveData<Boolean>
+            get() = _finished
+
+    init {
+        Log.d("ViewModel", "$name")
+    }
+
+   fun startTimer(){
+       timer = object : CountDownTimer(10000, 1000){
+           override fun onFinish() {
+               _finished.value = true
+           }
+
+           override fun onTick(millisUntilFinished: Long) {
+              val timeLeft = millisUntilFinished/1000
+               _seconds.value = timeLeft.toInt()
+           }
+       }.start()
+   }
+
+    fun stopTimer(){
+        timer.cancel()
+    }
 
     fun addToRecentlyViewedNotes(note: NoteInfo) {
         // Check if selection is already in the list
